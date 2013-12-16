@@ -1,0 +1,6 @@
+1. Intro
+	-> What we're building
+	-> What tools we're using
+	-> Why we're using these tools (speed)
+
+2. Makefile

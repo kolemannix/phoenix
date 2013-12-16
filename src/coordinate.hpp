@@ -4,10 +4,11 @@
 class Coordinate {
  public:
   Coordinate(int file, int rank);
-  const int file;
-  const int rank;
- private:
+  Coordinate(int index);
   Coordinate& operator=(const Coordinate& rhs);
+  int squareIndex() const;
+  int file;
+  int rank;
 };
 
 #endif

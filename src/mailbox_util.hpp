@@ -1,8 +1,12 @@
 #ifndef MAILBOX_UTIL_H
 #define MAILBOX_UTIL_H
 
-#include <string>
+#include <iostream>
 #include "coordinate.hpp"
+
+using std::cout;
+using std::endl;
+using std::string;
 
 namespace Mailbox {
   typedef unsigned char piececode;
@@ -25,10 +29,11 @@ namespace Mailbox {
   extern const piececode pc_b_king;
 
   extern void populateStartingPosition(piececode (&mailbox)[8][8]);
-  extern std::string pieceName(piececode p);
 
-  extern Coordinate coordinateFromIndex(int index);
-  extern int indexFromCoordinate(Coordinate c);
+  extern std::string pieceName(piececode p);
+  extern char pieceChar(piececode p);
+
+  extern void printMailbox(const piececode (&mailbox)[8][8]);
 }
 
 #endif

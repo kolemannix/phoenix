@@ -3,17 +3,10 @@
 
 #include "bitmap_util.hpp"
 #include "mailbox_util.hpp"
+#include "move.hpp"
 
 using namespace Bitmap;
 using namespace Mailbox;
-
-typedef struct {
-  int src_x = -1;
-  int src_y = -1;
-  int dst_x = -1;
-  int dst_y = -1;
-  bool capture = false;
-} Move;
 
 class Position {
  public:
@@ -24,6 +17,7 @@ class Position {
   // ----- DEBUG ------
   void printOccupied() const;
   piececode pieceAt(int file, int rank) const;
+  void printMailbox() const;
   bool validate() const;
 
  private:

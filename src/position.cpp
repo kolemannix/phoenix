@@ -45,8 +45,8 @@ Position::Position() {
 }
 
 void Position::make_move(Move move) {
-  piececode src_piece = mailbox[move.src_x][move.src_y];
-  piececode dst_piece = mailbox[move.dst_x][move.dst_y];
+  piececode src_piece = mailbox[move.src.file][move.src.rank];
+  piececode dst_piece = mailbox[move.dst.file][move.dst.rank];
   cout << "Source piece: " << Mailbox::pieceName(src_piece) << endl;
   cout << "Dst piece: " << Mailbox::pieceName(dst_piece) << endl;
 }
@@ -69,4 +69,8 @@ void Position::printOccupied() const {
 
 piececode Position::pieceAt(int file, int rank) const {
   return mailbox[file][rank];
+}
+
+void Position::printMailbox() const {
+  Mailbox::printMailbox(mailbox);
 }

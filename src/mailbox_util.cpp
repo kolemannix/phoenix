@@ -46,10 +46,21 @@ void Mailbox::populateStartingPosition(piececode (&mailbox)[8][8]) {
 	for (int x = 0; x < 8; x++) mailbox[6][x] = pc_b_pawn;
 }
 
-std::string Mailbox::pieceName(piececode p) {
+void Mailbox::printMailbox(const piececode (&mailbox)[8][8]) {
+    cout << " -------------------------------";
+  for (int rank = 7; rank >= 0; rank--) {
+    cout << "\n| ";
+    for (int file = 0; file < 8; file++) {
+      cout << pieceChar(mailbox[rank][file]) << " | ";
+    }
+  }
+  cout << "\n -------------------------------\n";
+}
+
+string Mailbox::pieceName(piececode p) {
   if (p == pc_empty) return "-";
 
-  std::string name = "";
+  string name = "";
   name += ((p >> 3) & 1) ? "black " : "white ";
   switch (p & 0x7) {
     case pc_w_pawn: name += "pawn"; break;
@@ -62,12 +73,22 @@ std::string Mailbox::pieceName(piececode p) {
   return name;
 }
 
-Coordinate Mailbox::coordinateFromIndex(int index) {
-  int file = index % 8;
-  int rank = index / 8;
-  return Coordinate(file, rank);
-}
+char Mailbox::pieceChar(piececode p) {
+  switch (p) {
+    case pc_empty: return '-';
+    case pc_w_pawn: return 'P';
+    case pc_w_bishop: return 'B';
+    case pc_w_knight: return 'N';
+    case pc_w_rook: return 'R';
+    case pc_w_queen: return 'Q';
+    case pc_w_king: return 'K';
 
-int Mailbox::indexFromCoordinate(Coordinate c) {
-  return c.file + c.rank*8;
+    case pc_b_pawn: return 'p';
+    case pc_b_bishop: return 'b';
+    case pc_b_knight: return 'n';
+    case pc_b_rook: return 'r';
+    case pc_b_queen: return 'q';
+    case pc_b_king: return 'k';
+  }
+  return 'x';
 }

@@ -11,11 +11,7 @@ using Mailbox::pieceName;
 int main() {
   Position p;
   //p.make_move(4, 41);
-  for (int y = 0; y < 8; y++) 
-    for (int x = 0; x < 8; x++) {
-      cout << "(" << y << ", " << x << "): ";
-      cout << pieceName(p.pieceAt(y, x)) << endl;
-    }
+  p.printMailbox();
 
   return 0;
 }

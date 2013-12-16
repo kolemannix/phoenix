@@ -7,17 +7,29 @@
 using namespace Bitmap;
 using namespace Mailbox;
 
+typedef struct {
+  int src_x = -1;
+  int src_y = -1;
+  int dst_x = -1;
+  int dst_y = -1;
+  bool capture = false;
+} Move;
+
 class Position {
  public:
-  void make_move(int src, int dst);
+  void make_move(Move move);
   Position();
 
 
   // ----- DEBUG ------
   void printOccupied() const;
+  piececode pieceAt(int file, int rank) const;
   bool validate() const;
 
  private:
+
+  bool isLegalMove(int s, int d);
+
   bitmap w_king, b_king;
   bitmap w_queen, b_queen;
   bitmap w_rook, b_rook;

@@ -3,6 +3,7 @@
 // Piece codes - 2nd bit is "sliding bit", 4th bit is color bit
 const Mailbox::piececode Mailbox::pc_empty = 255;
 
+
 const Mailbox::piececode Mailbox::pc_w_pawn =   0;
 const Mailbox::piececode Mailbox::pc_w_knight = 1;
 const Mailbox::piececode Mailbox::pc_w_bishop = 2;
@@ -43,5 +44,30 @@ void Mailbox::populateStartingPosition(piececode (&mailbox)[8][8]) {
 	mailbox[7][6] = pc_b_knight;
 	mailbox[7][7] = pc_b_rook;
 	for (int x = 0; x < 8; x++) mailbox[6][x] = pc_b_pawn;
+}
 
+std::string Mailbox::pieceName(piececode p) {
+  if (p == pc_empty) return "-";
+
+  std::string name = "";
+  name += ((p >> 3) & 1) ? "black " : "white ";
+  switch (p & 0x7) {
+    case pc_w_pawn: name += "pawn"; break;
+    case pc_w_knight: name += "knight"; break;
+    case pc_w_bishop: name += "bishop"; break;
+    case pc_w_rook: name += "rook"; break;
+    case pc_w_queen: name += "queen"; break;
+    case pc_w_king: name += "king"; break;
+  }
+  return name;
+}
+
+Coordinate Mailbox::coordinateFromIndex(int index) {
+  int file = index % 8;
+  int rank = index / 8;
+  return Coordinate(file, rank);
+}
+
+int Mailbox::indexFromCoordinate(Coordinate c) {
+  return c.file + c.rank*8;
 }

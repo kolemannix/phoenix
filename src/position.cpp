@@ -44,12 +44,13 @@ Position::Position() {
 
 }
 
-void Position::make_move(int s, int d) {
-  bitmap src = set_mask[s];
-  bitmap dst = set_mask[d];
-  printBitmap(src);
-  printBitmap(dst);
+void Position::make_move(Move move) {
+  piececode src_piece = mailbox[move.src_x][move.src_y];
+  piececode dst_piece = mailbox[move.dst_x][move.dst_y];
+  cout << "Source piece: " << Mailbox::pieceName(src_piece) << endl;
+  cout << "Dst piece: " << Mailbox::pieceName(dst_piece) << endl;
 }
+
 
 bool Position::validate() const {
   if (w_pieces & b_pieces) {
@@ -62,6 +63,10 @@ bool Position::validate() const {
 }
 
 void Position::printOccupied() const {
-  cout << occupied << endl;
+  cout << cardinality(occupied) << endl;
   Bitmap::printBitmap(occupied, true);
+}
+
+piececode Position::pieceAt(int file, int rank) const {
+  return mailbox[file][rank];
 }

@@ -1,4 +1,4 @@
-#include "bitmap_util.h"
+#include "bitmap_util.hpp"
 
 Bitmap::bitmap Bitmap::set_mask[64] = {0, 1, 2};
 int Bitmap::ns_init() {

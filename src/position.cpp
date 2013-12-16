@@ -1,21 +1,10 @@
-#include "position.h"
+#include "position.hpp"
 
-// Piece codes - 2nd bit is "sliding bit", 4th bit is color bit
-const int pc_w_pawn =   0;
-const int pc_w_knight = 1;
-const int pc_w_bishop = 2;
-const int pc_w_rook =   3;
-const int pc_w_queen =  6;
-const int pc_w_king =   5;
-
-const int pc_b_pawn =   8;
-const int pc_b_knight = 9;
-const int pc_b_bishop = 10;
-const int pc_b_rook =   11;
-const int pc_b_queen =  14;
-const int pc_b_king =   13;
 
 Position::Position() {
+
+  Mailbox::populateStartingPosition(mailbox);
+
   w_king =   0x0000000000000010;
   w_queen =  0x0000000000000008;
   w_rook =   0x0000000000000081;

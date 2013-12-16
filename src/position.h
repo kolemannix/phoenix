@@ -3,8 +3,22 @@
 
 #include "bitmap_util.h"
 
-using Bitmap::bitmap;
-using Bitmap::set_mask;
+using namespace Bitmap;
+
+// Piece codes - 2nd bit is "sliding bit", 4th bit is color bit
+extern const int pc_w_pawn;
+extern const int pc_w_knight;
+extern const int pc_w_bishop;
+extern const int pc_w_rook;
+extern const int pc_w_queen;
+extern const int pc_w_king;
+
+extern const int pc_b_pawn;
+extern const int pc_b_knight;
+extern const int pc_b_bishop;
+extern const int pc_b_rook;
+extern const int pc_b_queen;
+extern const int pc_b_king;
 
 class Position {
  public:
@@ -34,6 +48,10 @@ class Position {
   bitmap file_attacks[64][64];
   bitmap pos_diag_attacks[64][64];
   bitmap neg_diag_attacks[64][64];
+
+  int mailbox[8][8];
+
+  bitmap* piece_maps[32];
 
 };
 

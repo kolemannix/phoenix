@@ -9,6 +9,15 @@ int Bitmap::ns_init() {
   return -1;
 }
 
+int Bitmap::cardinality (bitmap x) {
+  int count = 0;
+  while (x) {
+    count++;
+    x &= x - 1; // reset LS1B
+  }
+  return count;
+}
+
 int Bitmap::dummy = ns_init();
 
 string Bitmap::separator = "-------------------------------";

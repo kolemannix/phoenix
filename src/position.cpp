@@ -1,5 +1,20 @@
 #include "position.h"
 
+// Piece codes - 2nd bit is "sliding bit", 4th bit is color bit
+const int pc_w_pawn =   0;
+const int pc_w_knight = 1;
+const int pc_w_bishop = 2;
+const int pc_w_rook =   3;
+const int pc_w_queen =  6;
+const int pc_w_king =   5;
+
+const int pc_b_pawn =   8;
+const int pc_b_knight = 9;
+const int pc_b_bishop = 10;
+const int pc_b_rook =   11;
+const int pc_b_queen =  14;
+const int pc_b_king =   13;
+
 Position::Position() {
   w_king =   0x0000000000000010;
   w_queen =  0x0000000000000008;
@@ -24,24 +39,36 @@ Position::Position() {
 
   occupied = w_pieces | b_pieces;
 
+  piece_maps[pc_w_pawn] = &w_pawn;
+  piece_maps[pc_w_knight] = &w_knight;
+  piece_maps[pc_w_bishop] = &w_bishop;
+  piece_maps[pc_w_rook] = &w_rook;
+  piece_maps[pc_w_pawn] = &w_queen;
+  piece_maps[pc_w_pawn] = &w_king;
+
+  piece_maps[pc_b_pawn] = &b_pawn;
+  piece_maps[pc_b_knight] = &b_knight;
+  piece_maps[pc_b_bishop] = &b_bishop;
+  piece_maps[pc_b_rook] = &b_rook;
+  piece_maps[pc_b_pawn] = &b_queen;
+  piece_maps[pc_b_pawn] = &b_king;
+
 }
 
 void Position::make_move(int s, int d) {
   bitmap src = set_mask[s];
   bitmap dst = set_mask[d];
-
-  // determine what type of piece
-  if ((src & w_king) != 0) {
-    cout << "src is white king";
-  }
-  
+  printBitmap(src);
+  printBitmap(dst);
 }
 
 bool Position::validate() const {
   if (w_pieces & b_pieces) {
     // Ensure white and black are mutually disjoint
+    cout << "White and Black share squares" << endl;
     return false;
   }
+  
   return true;
 }
 

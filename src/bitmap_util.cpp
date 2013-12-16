@@ -2,11 +2,9 @@
 
 Bitmap::bitmap Bitmap::set_mask[64] = {0, 1, 2};
 int Bitmap::ns_init() {
-  cout << "teh hax!\n";
   for (int i = 0; i < 64; i++) {
     bitmap val = ((bitmap)1 << (bitmap)i);
     set_mask[i] = val;
-    //printBitmap(val);
   }
   return -1;
 }

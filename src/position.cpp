@@ -29,11 +29,23 @@ Position::Position() {
 void Position::make_move(int s, int d) {
   bitmap src = set_mask[s];
   bitmap dst = set_mask[d];
-  Bitmap::printBitmap(src);
-  Bitmap::printBitmap(dst);
+
+  // determine what type of piece
+  if ((src & w_king) != 0) {
+    cout << "src is white king";
+  }
+  
 }
 
-void Position::printOccupied() {
+bool Position::validate() const {
+  if (w_pieces & b_pieces) {
+    // Ensure white and black are mutually disjoint
+    return false;
+  }
+  return true;
+}
+
+void Position::printOccupied() const {
   cout << occupied << endl;
   Bitmap::printBitmap(occupied, true);
 }

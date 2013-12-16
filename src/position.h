@@ -13,7 +13,8 @@ class Position {
 
 
   // ----- DEBUG ------
-  void printOccupied();
+  void printOccupied() const;
+  bool validate() const;
 
  private:
   bitmap w_king, b_king;

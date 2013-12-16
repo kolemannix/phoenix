@@ -8,6 +8,7 @@ using Bitmap::bitmap;
 
 int main() {
   Position p;
-  p.printOccupied();
+  p.make_move(4, 41);
+  //p.printOccupied();
   return 0;
 }

@@ -27,6 +27,9 @@ namespace Mailbox {
   extern const piececode pc_b_rook;
   extern const piececode pc_b_queen;
   extern const piececode pc_b_king;
+  
+  extern const piececode pc_w_pieces;
+  extern const piececode pc_b_pieces;
 
   extern void populateStartingPosition(piececode (&mailbox)[8][8]);
 

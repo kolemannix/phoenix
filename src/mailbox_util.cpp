@@ -3,7 +3,6 @@
 // Piece codes - 2nd bit is "sliding bit", 4th bit is color bit
 const Mailbox::piececode Mailbox::pc_empty = 255;
 
-
 const Mailbox::piececode Mailbox::pc_w_pawn =   0;
 const Mailbox::piececode Mailbox::pc_w_knight = 1;
 const Mailbox::piececode Mailbox::pc_w_bishop = 2;
@@ -17,6 +16,9 @@ const Mailbox::piececode Mailbox::pc_b_bishop = 10;
 const Mailbox::piececode Mailbox::pc_b_rook =   11;
 const Mailbox::piececode Mailbox::pc_b_queen =  14;
 const Mailbox::piececode Mailbox::pc_b_king =   13;
+
+const Mailbox::piececode Mailbox::pc_w_pieces =   7;
+const Mailbox::piececode Mailbox::pc_b_pieces =   15;
 
 void Mailbox::populateStartingPosition(piececode (&mailbox)[8][8]) {
 	for (int y = 0; y < 8; y++) {

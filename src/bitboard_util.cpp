@@ -1,15 +1,15 @@
-#include "bitmap_util.hpp"
+#include "bitboard_util.hpp"
 
-Bitmap::bitmap Bitmap::set_mask[64] = {0, 1, 2};
-int Bitmap::ns_init() {
+Bitboard::bitboard Bitboard::set_mask[64] = {0, 1, 2};
+int Bitboard::ns_init() {
   for (int i = 0; i < 64; i++) {
-    bitmap val = ((bitmap)1 << (bitmap)i);
+    bitboard val = ((bitboard)1 << (bitboard)i);
     set_mask[i] = val;
   }
   return -1;
 }
 
-int Bitmap::cardinality (bitmap x) {
+int Bitboard::cardinality (bitboard x) {
   int count = 0;
   while (x) {
     count++;
@@ -18,11 +18,11 @@ int Bitmap::cardinality (bitmap x) {
   return count;
 }
 
-int Bitmap::dummy = ns_init();
+int Bitboard::dummy = ns_init();
 
-string Bitmap::separator = "-------------------------------";
+string Bitboard::separator = "-------------------------------";
 
-void Bitmap::printBitmap(bitmap b, bool with_grid) {
+void Bitboard::printBitboard(bitboard b, bool with_grid) {
   string buffer = "";
   if (with_grid) buffer += "  ";
   buffer += separator;

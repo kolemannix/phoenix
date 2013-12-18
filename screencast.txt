@@ -1,6 +1,10 @@
 1. Intro
+	-> Say hello
 	-> What we're building
-	-> What tools we're using
-	-> Why we're using these tools (speed)
+	-> What tools we're using and why	
 
-2. Makefile
+2. Project setup
+	-> Makefile
+	-> a little bit of my setup (xcode will work just fine though)
+
+3. Bitboards

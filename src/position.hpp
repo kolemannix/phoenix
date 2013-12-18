@@ -1,11 +1,11 @@
 #ifndef POSITION_H
 #define POSITION_H
 
-#include "bitmap_util.hpp"
+#include "bitboard_util.hpp"
 #include "mailbox_util.hpp"
 #include "move.hpp"
 
-using namespace Bitmap;
+using namespace Bitboard;
 using namespace Mailbox;
 
 class Position {
@@ -24,28 +24,21 @@ class Position {
 
   bool isLegalMove(int s, int d);
 
-  bitmap w_king, b_king;
-  bitmap w_queen, b_queen;
-  bitmap w_rook, b_rook;
-  bitmap w_bishop, b_bishop;
-  bitmap w_knight, b_knight;
-  bitmap w_pawn, b_pawn;
+  bitboard piece_boards[32];
 
-  bitmap occupied;
-  bitmap w_pieces, b_pieces;
+  bitboard occupied, empty;
 
-  bitmap attacks_from[64];
-  bitmap attacks_to[64];
+  bitboard attacks_from[64];
+  bitboard attacks_to[64];
   
-  bitmap rank_attacks[64][64];
-  bitmap file_attacks[64][64];
-  bitmap pos_diag_attacks[64][64];
-  bitmap neg_diag_attacks[64][64];
+  bitboard rank_attacks[64][64];
+  bitboard file_attacks[64][64];
+  bitboard pos_diag_attacks[64][64];
+  bitboard neg_diag_attacks[64][64];
 
   piececode mailbox[8][8];
 
-  bitmap* piece_maps[32];
-
+  bool white_to_move;
 };
 
 #endif

@@ -19,6 +19,7 @@ class Position {
   piececode pieceAt(int file, int rank) const;
   void printMailbox() const;
   bool validate() const;
+  void setDebug(bool d);
 
  private:
 
@@ -39,6 +40,12 @@ class Position {
   piececode mailbox[8][8];
 
   bool white_to_move;
+  
+
+
+  inline piececode otherColor(piececode color);
+
+  bool debug_mode;
 };
 
 #endif

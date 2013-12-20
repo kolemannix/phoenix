@@ -1,7 +1,7 @@
 #include "bitboard_util.hpp"
 
-Bitboard::bitboard Bitboard::set_mask[64] = {0, 1, 2};
-int Bitboard::ns_init() {
+Bitboard::bitboard Bitboard::set_mask[64] = {0};
+int Bitboard::__nsInit() {
   for (int i = 0; i < 64; i++) {
     bitboard val = ((bitboard)1 << (bitboard)i);
     set_mask[i] = val;
@@ -18,7 +18,7 @@ int Bitboard::cardinality (bitboard x) {
   return count;
 }
 
-int Bitboard::dummy = ns_init();
+int Bitboard::dummy = __nsInit();
 
 string Bitboard::separator = "-------------------------------";
 

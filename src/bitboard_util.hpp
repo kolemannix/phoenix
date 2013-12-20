@@ -10,12 +10,13 @@ using std::endl;
 
 namespace Bitboard {
 
-extern int ns_init();
+extern int __nsInit();
 extern int dummy;
 
 typedef uint64_t bitboard; 
 
 extern bitboard set_mask[64];
+
 extern string separator;
 extern void printBitboard(bitboard x, bool with_grid = true); 
 extern int cardinality(bitboard x);

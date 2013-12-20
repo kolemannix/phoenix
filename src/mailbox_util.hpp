@@ -2,7 +2,6 @@
 #define MAILBOX_UTIL_H
 
 #include <iostream>
-#include "coordinate.hpp"
 
 using std::cout;
 using std::endl;

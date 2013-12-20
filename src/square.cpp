@@ -1,8 +1,13 @@
-#include "coordinate.hpp"
+#include "square.hpp"
 
 char file_chars[8] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
 
-Coordinate::Coordinate(int f, int r){
+Square::Square() {
+  file = -1;
+  rank = -1;
+}
+
+Square::Square(int f, int r){
   if (f < 0 || f > 7 || r < 0 || r > 7) {
     throw 42;
   }
@@ -10,7 +15,7 @@ Coordinate::Coordinate(int f, int r){
   rank = r;
 }
 
-Coordinate::Coordinate(int index){
+Square::Square(int index){
   int f = index % 8;
   int r = index / 8;
   if (f < 0 || f > 7 || r < 0 || r > 7) {
@@ -20,8 +25,8 @@ Coordinate::Coordinate(int index){
   rank = r;
 }
 
-Coordinate::Coordinate(std::string san) {
-  int f;
+Square::Square(std::string san) {
+  int f = 0;
   switch (san[0]) {
     case 'a': f = 0; break;
     case 'b': f = 1; break;
@@ -36,17 +41,17 @@ Coordinate::Coordinate(std::string san) {
   rank = san[1] - '0' - 1;
 }
 
-Coordinate& Coordinate::operator=(const Coordinate& rhs) {
+Square& Square::operator=(const Square& rhs) {
   file = rhs.file;
   rank = rhs.rank;
   return *this;
 }
 
-int Coordinate::squareIndex() const {
+int Square::squareIndex() const {
   return rank * 8 + file;
 }
 
-std::string Coordinate::toString() const {
+std::string Square::toString() const {
   std::string rep = file_chars[file] + std::to_string(rank + 1); 
   return rep;
 }

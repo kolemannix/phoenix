@@ -8,34 +8,55 @@ using std::endl;
 using std::string;
 
 namespace Mailbox {
-  typedef unsigned char piececode;
+typedef unsigned char piececode;
 
-  // Piece codes
-  extern const piececode pc_empty;
+// Piece codes
+// Piece codes - 2nd bit is "sliding bit", 4th bit is color bit
+const piececode pc_empty = 255;
 
-  extern const piececode pc_w_pawn;
-  extern const piececode pc_w_knight;
-  extern const piececode pc_w_bishop;
-  extern const piececode pc_w_rook;
-  extern const piececode pc_w_queen;
-  extern const piececode pc_w_king;
+const piececode pc_w_pawn =   0; // 0000
+const piececode pc_w_knight = 1; // 0001
+const piececode pc_w_bishop = 2; // 0010
+const piececode pc_w_rook =   3; // 0011
+const piececode pc_w_queen =  6; // 0110
+const piececode pc_w_king =   5; // 0101
 
-  extern const piececode pc_b_pawn;
-  extern const piececode pc_b_knight;
-  extern const piececode pc_b_bishop;
-  extern const piececode pc_b_rook;
-  extern const piececode pc_b_queen;
-  extern const piececode pc_b_king;
-  
-  extern const piececode pc_w_pieces;
-  extern const piececode pc_b_pieces;
+const piececode pc_b_pawn =   8; // 1000
+const piececode pc_b_knight = 9; // 1001
+const piececode pc_b_bishop = 10;// 1010
+const piececode pc_b_rook =   11;// 1011
+const piececode pc_b_queen =  14;// 1110
+const piececode pc_b_king =   13;// 1101
 
-  extern void populateStartingPosition(piececode (&mailbox)[8][8]);
+const piececode pc_w_pieces =   7;
+const piececode pc_b_pieces =   15;
 
-  extern std::string pieceName(piececode p);
-  extern char pieceChar(piececode p);
+const piececode bishop_mask = 0x2;
+const piececode rook_mask = 0x3;
+const piececode queen_mask = 0x6;
 
-  extern void printMailbox(const piececode (&mailbox)[8][8]);
+
+extern void populateStartingPosition(piececode (&mailbox)[8][8]);
+
+extern std::string pieceName(piececode p);
+extern char pieceChar(piececode p);
+
+extern void printMailbox(const piececode (&mailbox)[8][8]);
+
+extern bool isRook(piececode p);
+extern bool isBishop(piececode p);
+extern bool isQueen(piececode p);
+
+inline bool isRook(piececode p) {
+  return (p & rook_mask) == rook_mask;
+}
+inline bool isBishop(piececode p) {
+  return (p & bishop_mask) == bishop_mask;
+}
+inline bool isQueen(piececode p) {
+  return (p & queen_mask) == queen_mask;
+}
+
 }
 
 #endif

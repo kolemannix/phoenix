@@ -1,178 +1,180 @@
 #include "magic.hpp"
+#include "types.hpp"
 
-bitboard Magic::edge_squares = 0xff818181818181ff;
+Bitboard RMasks[SQUARE_NB];
+Bitboard RMagics[SQUARE_NB];
+Bitboard* RAttacks[SQUARE_NB];
+unsigned RShifts[SQUARE_NB];
 
-bitboard Magic::bishop_masks[64] = {0};
-bitboard Magic::rook_masks[64] = {0};
-bitboard Magic::bishop_attacks[64][512] = {{0}};
-bitboard Magic::rook_attacks[64][4096] = {{0}};
+Bitboard BMasks[SQUARE_NB];
+Bitboard BMagics[SQUARE_NB];
+Bitboard* BAttacks[SQUARE_NB];
+unsigned BShifts[SQUARE_NB];
 
-int __init() {
-  // Initialize rook masks
-  for (int y = 0; y < 8; y++) {
-    bitboard full_x = 0xff;
-    bitboard full_y = 0x101010101010101;
-    bitboard shifted_y = (full_y << y);
-    for (int x = 0; x < 8; x++) {
-      int index = y*8+x;
-      bitboard shifted_x = (full_x << x*8);
-      cout << "index: " << y*8+x << endl;
-      Magic::bishop_masks[index] = (shifted_x | shifted_y);
-    }
-  }
-  // Initialize bishop masks
-  // Bishop attacks
-  for (int y = 0; y < 8; y++) {
-    bitboard pos_diag = 0x8040201008040201;
-    bitboard neg_diag = 0x102040810204080; 
-    bitboard shifted_y = (full_y << y);
-    for (int x = 0; x < 8; x++) {
-      int index = y*8+x;
-      bitboard shifted_x = (full_x << x*8);
-      cout << "index: " << y*8+x << endl;
-      Magic::bishop_masks[index] = (shifted_x | shifted_y);
-      printBitboard(Magic::bishop_masks[index]);
-    }
-  }
-  for (int square = 0; square < 64; square++) {
+Bitboard RTable[0x19000]; // Storage space for rook attacks
+Bitboard BTable[0x1480]; 
 
-  } 
-  return 0;
+typedef unsigned (Fn)(Square, Bitboard);
+void init_magics(Bitboard table[], Bitboard* attacks[], Bitboard magics[],
+                 Bitboard masks[], unsigned shifts[], Square deltas[], Fn index);
+void Magic::init() {
+
+  //for (Square s = SQ_A1; s <= SQ_H8; ++s)
+  //BSFTable[bsf_index(SquareBB[s] = 1ULL << s)] = s;
+
+  //for (Bitboard b = 1; b < 256; ++b)
+  //MS1BTable[b] = more_than_one(b) ? MS1BTable[b - 1] : lsb(b);
+
+
+  //for (File f = FILE_A; f <= FILE_H; ++f)
+  //AdjacentFilesBB[f] = (f > FILE_A ? FileBB[f - 1] : 0) | (f < FILE_H ? FileBB[f + 1] : 0);
+
+  //for (Rank r = RANK_1; r < RANK_8; ++r)
+  //InFrontBB[WHITE][r] = ~(InFrontBB[BLACK][r + 1] = InFrontBB[BLACK][r] | RankBB[r]);
+
+  //for (Color c = WHITE; c <= BLACK; ++c)
+  //for (Square s = SQ_A1; s <= SQ_H8; ++s)
+  //{
+  //ForwardBB[c][s]      = InFrontBB[c][rank_of(s)] & FileBB[file_of(s)];
+  //PawnAttackSpan[c][s] = InFrontBB[c][rank_of(s)] & AdjacentFilesBB[file_of(s)];
+  //PassedPawnMask[c][s] = ForwardBB[c][s] | PawnAttackSpan[c][s];
+  //}
+
+  //for (Square s1 = SQ_A1; s1 <= SQ_H8; ++s1)
+  //for (Square s2 = SQ_A1; s2 <= SQ_H8; ++s2)
+  //if (s1 != s2)
+  //{
+  //SquareDistance[s1][s2] = std::max(file_distance(s1, s2), rank_distance(s1, s2));
+  //DistanceRingsBB[s1][SquareDistance[s1][s2] - 1] |= s2;
+  //}
+
+  //int steps[][9] = { {}, { 7, 9 }, { 17, 15, 10, 6, -6, -10, -15, -17 },
+  //{}, {}, {}, { 9, 7, -7, -9, 8, 1, -1, -8 } };
+
+  //for (Color c = WHITE; c <= BLACK; ++c)
+  //for (PieceType pt = PAWN; pt <= KING; ++pt)
+  //for (Square s = SQ_A1; s <= SQ_H8; ++s)
+  //for (int i = 0; steps[pt][i]; ++i)
+  //{
+  //Square to = s + Square(c == WHITE ? steps[pt][i] : -steps[pt][i]);
+
+  //if (is_ok(to) && square_distance(s, to) < 3)
+  //StepAttacksBB[make_piece(c, pt)][s] |= to;
+  //}
+
+  Square RDeltas[] = { DELTA_N,  DELTA_E,  DELTA_S,  DELTA_W  };
+  Square BDeltas[] = { DELTA_NE, DELTA_SE, DELTA_SW, DELTA_NW };
+
+  init_magics(RTable, RAttacks, RMagics, RMasks, RShifts, RDeltas, magic_index<ROOK>);
+  init_magics(BTable, BAttacks, BMagics, BMasks, BShifts, BDeltas, magic_index<BISHOP>);
 }
 
 
-int dummy = __init();
+namespace {
 
-const bitboard Magic::rook_magic[64] = {
-  0x2080020500400f0ULL,
-  0x28444000400010ULL,
-  0x20000a1004100014ULL,
-  0x20010c090202006ULL,
-  0x8408008200810004ULL,
-  0x1746000808002ULL,
-  0x2200098000808201ULL,
-  0x12c0002080200041ULL,
-  0x104000208e480804ULL,
-  0x8084014008281008ULL,
-  0x4200810910500410ULL,
-  0x100014481c20400cULL,
-  0x4014a4040020808ULL,
-  0x401002001010a4ULL,
-  0x202000500010001ULL,
-  0x8112808005810081ULL,
-  0x40902108802020ULL,
-  0x42002101008101ULL,
-  0x459442200810c202ULL,
-  0x81001103309808ULL,
-  0x8110000080102ULL,
-  0x8812806008080404ULL,
-  0x104020000800101ULL,
-  0x40a1048000028201ULL,
-  0x4100ba0000004081ULL,
-  0x44803a4003400109ULL,
-  0xa010a00000030443ULL,
-  0x91021a000100409ULL,
-  0x4201e8040880a012ULL,
-  0x22a000440201802ULL,
-  0x30890a72000204ULL,
-  0x10411402a0c482ULL,
-  0x40004841102088ULL,
-  0x40230000100040ULL,
-  0x40100010000a0488ULL,
-  0x1410100200050844ULL,
-  0x100090808508411ULL,
-  0x1410040024001142ULL,
-  0x8840018001214002ULL,
-  0x410201000098001ULL,
-  0x8400802120088848ULL,
-  0x2060080000021004ULL,
-  0x82101002000d0022ULL,
-  0x1001101001008241ULL,
-  0x9040411808040102ULL,
-  0x600800480009042ULL,
-  0x1a020000040205ULL,
-  0x4200404040505199ULL,
-  0x2020081040080080ULL,
-  0x40a3002000544108ULL,
-  0x4501100800148402ULL,
-  0x81440280100224ULL,
-  0x88008000000804ULL,
-  0x8084060000002812ULL,
-  0x1840201000108312ULL,
-  0x5080202000000141ULL,
-  0x1042a180880281ULL,
-  0x900802900c01040ULL,
-  0x8205104104120ULL,
-  0x9004220000440aULL,
-  0x8029510200708ULL,
-  0x8008440100404241ULL,
-  0x2420001111000bdULL,
-  0x4000882304000041ULL,
-};
+Bitboard sliding_attack(Square deltas[], Square sq, Bitboard occupied) {
 
-const bitboard Magic::bishop_magic[64] = {
-  0x100420000431024ULL,
-  0x280800101073404ULL,
-  0x42000a00840802ULL,
-  0xca800c0410c2ULL,
-  0x81004290941c20ULL,
-  0x400200450020250ULL,
-  0x444a019204022084ULL,
-  0x88610802202109aULL,
-  0x11210a0800086008ULL,
-  0x400a08c08802801ULL,
-  0x1301a0500111c808ULL,
-  0x1280100480180404ULL,
-  0x720009020028445ULL,
-  0x91880a9000010a01ULL,
-  0x31200940150802b2ULL,
-  0x5119080c20000602ULL,
-  0x242400a002448023ULL,
-  0x4819006001200008ULL,
-  0x222c10400020090ULL,
-  0x302008420409004ULL,
-  0x504200070009045ULL,
-  0x210071240c02046ULL,
-  0x1182219000022611ULL,
-  0x400c50000005801ULL,
-  0x4004010000113100ULL,
-  0x2008121604819400ULL,
-  0xc4a4010000290101ULL,
-  0x404a000888004802ULL,
-  0x8820c004105010ULL,
-  0x28280100908300ULL,
-  0x4c013189c0320a80ULL,
-  0x42008080042080ULL,
-  0x90803000c080840ULL,
-  0x2180001028220ULL,
-  0x1084002a040036ULL,
-  0x212009200401ULL,
-  0x128110040c84a84ULL,
-  0x81488020022802ULL,
-  0x8c0014100181ULL,
-  0x2222013020082ULL,
-  0xa00100002382c03ULL,
-  0x1000280001005c02ULL,
-  0x84801010000114cULL,
-  0x480410048000084ULL,
-  0x21204420080020aULL,
-  0x2020010000424a10ULL,
-  0x240041021d500141ULL,
-  0x420844000280214ULL,
-  0x29084a280042108ULL,
-  0x84102a8080a20a49ULL,
-  0x104204908010212ULL,
-  0x40a20280081860c1ULL,
-  0x3044000200121004ULL,
-  0x1001008807081122ULL,
-  0x50066c000210811ULL,
-  0xe3001240f8a106ULL,
-  0x940c0204030020d4ULL,
-  0x619204000210826aULL,
-  0x2010438002b00a2ULL,
-  0x884042004005802ULL,
-  0xa90240000006404ULL,
-  0x500d082244010008ULL,
-  0x28190d00040014e0ULL,
-  0x825201600c082444ULL,
-};
+  Bitboard attack = 0;
+
+  for (int i = 0; i < 4; ++i)
+    for (Square s = sq + deltas[i];
+         is_ok(s) && square_distance(s, s - deltas[i]) == 1;
+         s += deltas[i])
+    {
+      attack |= s;
+
+      if (occupied & s)
+        break;
+    }
+
+  return attack;
+}
+
+
+Bitboard pick_random(RKISS& rk, int booster) {
+
+  // Values s1 and s2 are used to rotate the candidate magic of a
+  // quantity known to be optimal to quickly find the magics.
+  int s1 = booster & 63, s2 = (booster >> 6) & 63;
+
+  Bitboard m = rk.rand<Bitboard>();
+  m = (m >> s1) | (m << (64 - s1));
+  m &= rk.rand<Bitboard>();
+  m = (m >> s2) | (m << (64 - s2));
+  return m & rk.rand<Bitboard>();
+}
+
+
+// init_magics() computes all rook and bishop attacks at startup. Magic
+// bitboards are used to look up attacks of sliding pieces. As a reference see
+// chessprogramming.wikispaces.com/Magic+Bitboards. In particular, here we
+// use the so called "fancy" approach.
+
+void init_magics(Bitboard table[], Bitboard* attacks[], Bitboard magics[],
+                 Bitboard masks[], unsigned shifts[], Square deltas[], Fn index) {
+
+  int MagicBoosters[][8] = { { 3191, 2184, 1310, 3618, 2091, 1308, 2452, 3996 },
+    { 1059, 3608,  605, 3234, 3326,   38, 2029, 3043 } };
+  RKISS rk;
+  Bitboard occupancy[4096], reference[4096], edges, b;
+  int i, size, booster;
+
+  // attacks[s] is a pointer to the beginning of the attacks table for square 's'
+  attacks[SQ_A1] = table;
+
+  for (Square s = SQ_A1; s <= SQ_H8; ++s)
+  {
+    // Board edges are not considered in the relevant occupancies
+    edges = ((Rank1BB | Rank8BB) & ~rank_bb(s)) | ((FileABB | FileHBB) & ~file_bb(s));
+
+    // Given a square 's', the mask is the bitboard of sliding attacks from
+    // 's' computed on an empty board. The index must be big enough to contain
+    // all the attacks for each possible subset of the mask and so is 2 power
+    // the number of 1s of the mask. Hence we deduce the size of the shift to
+    // apply to the 64 or 32 bits word to get the index.
+    masks[s]  = sliding_attack(deltas, s, 0) & ~edges;
+    shifts[s] = (Is64Bit ? 64 : 32) - popcount<Max15>(masks[s]);
+
+    // Use Carry-Rippler trick to enumerate all subsets of masks[s] and
+    // store the corresponding sliding attack bitboard in reference[].
+    b = size = 0;
+    do {
+      occupancy[size] = b;
+      reference[size++] = sliding_attack(deltas, s, b);
+      b = (b - masks[s]) & masks[s];
+    } while (b);
+
+    // Set the offset for the table of the next square. We have individual
+    // table sizes for each square with "Fancy Magic Bitboards".
+    if (s < SQ_H8)
+      attacks[s + 1] = attacks[s] + size;
+
+    booster = MagicBoosters[Is64Bit][rank_of(s)];
+
+    // Find a magic for square 's' picking up an (almost) random number
+    // until we find the one that passes the verification test.
+    do {
+      do magics[s] = pick_random(rk, booster);
+      while (popcount<Max15>((magics[s] * masks[s]) >> 56) < 6);
+
+      std::memset(attacks[s], 0, size * sizeof(Bitboard));
+
+      // A good magic must map every possible occupancy to an index that
+      // looks up the correct sliding attack in the attacks[s] database.
+      // Note that we build up the database for square 's' as a side
+      // effect of verifying the magic.
+      for (i = 0; i < size; ++i)
+      {
+        Bitboard& attack = attacks[s][index(s, occupancy[i])];
+
+        if (attack && attack != reference[i])
+          break;
+
+        assert(reference[i] != 0);
+
+        attack = reference[i];
+      }
+    } while (i != size);
+  }
+}
+}

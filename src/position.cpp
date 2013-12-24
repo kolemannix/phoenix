@@ -1,5 +1,7 @@
 #include "position.hpp"
+#include "square.hpp"
 
+using Bitboards::pretty;
 
 Position::Position() {
   debug_mode = false;
@@ -37,19 +39,26 @@ Position::Position() {
  * @param move The move to make
  */
 void Position::make_move(Move move) {
-  bitboard from_square = set_mask[move.src.squareIndex()];
-  bitboard to_square = set_mask[move.dst.squareIndex()];
-  piececode src_piece = mailbox[move.src.rank][move.src.file];
-  piececode dst_piece = mailbox[move.dst.rank][move.dst.file];
-  bitboard from_to_mask = from_square ^ to_square;
+  
+  Bitboard from_square = SquareBB[from_sq(move)];
+  Bitboard to_square = SquareBB[to_sq(move)];
+  int src_file = Squares::fileOf(from_sq(move));
+  int src_rank = Squares::rankOf(from_sq(move));
+  int dst_file = Squares::fileOf(to_sq(move));
+  int dst_rank = Squares::rankOf(to_sq(move));
+  piececode src_piece = mailbox[src_rank][src_file];
+  piececode dst_piece = mailbox[dst_rank][dst_file];
+  Bitboard from_to_mask = from_square ^ to_square;
 
   // from stuff
   piece_boards[src_piece]  ^=  from_to_mask;   // update piece bitboard
-  piece_boards[move.color]  ^=  from_to_mask;   // update white or black color bitboard
+  // TODO prevent this branch?
+  piececode moving_color = white_to_move ? pc_w_pieces : pc_b_pieces;
+  piece_boards[moving_color]  ^=  from_to_mask;   // update white or black color bitboard
   // to stuff
-  if (move.capture) {
+  if (type_of(move) == CAPTURE) {
     piece_boards[dst_piece] ^= to_square;
-    piece_boards[otherColor(move.color)] ^= to_square;
+    piece_boards[otherColor(moving_color)] ^= to_square;
     occupied            ^=  from_square;   // update occupied ...
     empty               ^=  from_square;   // ... and empty bitboard
   } else {
@@ -58,30 +67,30 @@ void Position::make_move(Move move) {
   }
 
   // Update mailbox
-  piececode tmp = mailbox[move.src.rank][move.src.file];
-  mailbox[move.src.rank][move.src.file] = pc_empty;
-  mailbox[move.dst.rank][move.dst.file] = tmp;
+  piececode tmp = mailbox[src_rank][src_file];
+  mailbox[src_rank][src_file] = pc_empty;
+  mailbox[dst_rank][dst_file] = tmp;
 
   // ----------- debug ------------
   if (debug_mode) {
     cout << "from square\n";
-    printBitboard(from_square);
+    cout << pretty(from_square);
     cout << "to square\n";
-    printBitboard(to_square);
+    cout << pretty(to_square);
     cout << "from_to_mask\n";
-    printBitboard(from_to_mask);
+    cout << pretty(from_to_mask);
     cout << "from piece\n";
-    printBitboard(piece_boards[src_piece]);
+    cout << pretty(piece_boards[src_piece]);
     cout << "to piece\n";
-    printBitboard(piece_boards[dst_piece]);
+    cout << pretty(piece_boards[dst_piece]);
     cout << "white pieces" << endl;
-    printBitboard(piece_boards[pc_w_pieces]);
+    cout << pretty(piece_boards[pc_w_pieces]);
     cout << "black pieces" << endl;
-    printBitboard(piece_boards[pc_b_pieces]);
+    cout << pretty(piece_boards[pc_b_pieces]);
     cout << "occupied" << endl;
-    printBitboard(occupied);
+    cout << pretty(occupied);
     cout << "empty" << endl;
-    printBitboard(empty);
+    cout << pretty(empty);
   }
 
   white_to_move = !white_to_move;
@@ -99,8 +108,7 @@ bool Position::validate() const {
 }
 
 void Position::printOccupied() const {
-  cout << cardinality(occupied) << endl;
-  Bitboard::printBitboard(occupied, true);
+  cout << Bitboards::pretty(occupied);
 }
 
 piececode Position::pieceAt(int file, int rank) const {

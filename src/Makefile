@@ -4,7 +4,7 @@
 CXX	 	= clang++
 CXXFLAGS 	= -O2 -std=c++11 -stdlib=libc++ -Wc++11-extensions
 CXXDBGFLAGS	= -g -Wall
-OFILES		= sample.cpp bitboard_util.cpp position.cpp mailbox_util.cpp square.cpp move.cpp magic.cpp
+OFILES		= main.cpp bitboard.cpp position.cpp mailbox_util.cpp square.cpp
 
 # Create a .o file from a .cpp file, using CXX and CXXFLAGS macros
 .SUFFIXES: .o .cpp

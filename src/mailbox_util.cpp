@@ -1,25 +1,5 @@
 #include "mailbox_util.hpp"
 
-// Piece codes - 2nd bit is "sliding bit", 4th bit is color bit
-const Mailbox::piececode Mailbox::pc_empty = 255;
-
-const Mailbox::piececode Mailbox::pc_w_pawn =   0;
-const Mailbox::piececode Mailbox::pc_w_knight = 1;
-const Mailbox::piececode Mailbox::pc_w_bishop = 2;
-const Mailbox::piececode Mailbox::pc_w_rook =   3;
-const Mailbox::piececode Mailbox::pc_w_queen =  6;
-const Mailbox::piececode Mailbox::pc_w_king =   5;
-
-const Mailbox::piececode Mailbox::pc_b_pawn =   8;
-const Mailbox::piececode Mailbox::pc_b_knight = 9;
-const Mailbox::piececode Mailbox::pc_b_bishop = 10;
-const Mailbox::piececode Mailbox::pc_b_rook =   11;
-const Mailbox::piececode Mailbox::pc_b_queen =  14;
-const Mailbox::piececode Mailbox::pc_b_king =   13;
-
-const Mailbox::piececode Mailbox::pc_w_pieces =   7;
-const Mailbox::piececode Mailbox::pc_b_pieces =   15;
-
 void Mailbox::populateStartingPosition(piececode (&mailbox)[8][8]) {
 	for (int y = 0; y < 8; y++) {
 		for (int x = 0; x < 8; x++) {
@@ -49,14 +29,14 @@ void Mailbox::populateStartingPosition(piececode (&mailbox)[8][8]) {
 }
 
 void Mailbox::printMailbox(const piececode (&mailbox)[8][8]) {
-    cout << " -------------------------------";
   for (int rank = 7; rank >= 0; rank--) {
-    cout << "\n| ";
+    cout << " +---+---+---+---+---+---+---+---+\n ";
     for (int file = 0; file < 8; file++) {
-      cout << pieceChar(mailbox[rank][file]) << " | ";
+      cout << "| " << pieceChar(mailbox[rank][file]) << " ";
     }
+    cout << "|\n";
   }
-  cout << "\n -------------------------------\n";
+  cout << " +---+---+---+---+---+---+---+---+\n";
 }
 
 string Mailbox::pieceName(piececode p) {
@@ -77,7 +57,7 @@ string Mailbox::pieceName(piececode p) {
 
 char Mailbox::pieceChar(piececode p) {
   switch (p) {
-    case pc_empty: return '-';
+    case pc_empty: return ' ';
     case pc_w_pawn: return 'P';
     case pc_w_bishop: return 'B';
     case pc_w_knight: return 'N';

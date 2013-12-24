@@ -2,30 +2,14 @@
 
 char file_chars[8] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
 
-Square::Square() {
-  file = -1;
-  rank = -1;
+Square Squares::fromFileAndRank(int f, int r){
+  return Square(r*8+f);
 }
 
-Square::Square(int f, int r){
-  if (f < 0 || f > 7 || r < 0 || r > 7) {
-    throw 42;
-  }
-  file = f;
-  rank = r;
-}
+Rank Squares::rankOf(Square i) { return Rank(i / 8); }
+File Squares::fileOf(Square i) { return File(i % 8); }
 
-Square::Square(int index){
-  int f = index % 8;
-  int r = index / 8;
-  if (f < 0 || f > 7 || r < 0 || r > 7) {
-    throw 42;
-  }
-  file = f;
-  rank = r;
-}
-
-Square::Square(std::string san) {
+Square Squares::fromSAN(std::string san) {
   int f = 0;
   switch (san[0]) {
     case 'a': f = 0; break;
@@ -37,21 +21,13 @@ Square::Square(std::string san) {
     case 'g': f = 6; break;
     case 'h': f = 7; break;
   }
-  file = f;
-  rank = san[1] - '0' - 1;
+  int r  = san[1] - '0' - 1;
+  return fromFileAndRank(f, r);
 }
 
-Square& Square::operator=(const Square& rhs) {
-  file = rhs.file;
-  rank = rhs.rank;
-  return *this;
-}
-
-int Square::squareIndex() const {
-  return rank * 8 + file;
-}
-
-std::string Square::toString() const {
+std::string Squares::pretty(Square s) {
+  int file = s % 8;
+  int rank = s / 8;
   std::string rep = file_chars[file] + std::to_string(rank + 1); 
   return rep;
 }
